@@ -9,7 +9,7 @@
 Folia groups nearby loaded chunks to form an "independent region."
 See [the PaperMC documentation](https://docs.papermc.io/folia/reference/region-logic) for exact details on how Folia
 will group nearby chunks.
-Each independent region has its own tick loop, which is ticked at the
+Each independent region has its tick loop, which is ticked at the
 regular Minecraft tickrate (20TPS). The tick loops are executed
 on a thread pool in parallel. There is no main thread anymore, 
 as each region effectively has its own "main thread" that executes
