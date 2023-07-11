@@ -1,4 +1,4 @@
-name: Build
+name: Build main
 
 on:
   push:
@@ -27,4 +27,9 @@ jobs:
       - name: Apply Patches
         run: ./gradlew applyPatches
       - name: Build
-        run: ./gradlew build
+        run: ./gradlew createReobfBundlerJar
+      - name: upload
+        uses: actions/upload-artifact@v3
+        with:
+         name: folia
+         path: build/libs/*.jar
