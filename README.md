@@ -27,7 +27,7 @@ A more detailed but abstract overview: [Project overview](https://docs.papermc.i
 ## FAQ
 
 ### What server types can benefit from Folia?
-Server types that naturally spread players out, 
+Server types that naturally spread player out, 
 like skyblock or SMP, will benefit the most from Folia. The server
 should have a sizeable player count, too.
 
