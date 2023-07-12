@@ -51,7 +51,7 @@ taken into account. Then, allocate threads for:
 - There is no best guess for chunk system workers if not pre-generated, as
   on the test server we ran we gave 16 threads but chunk generation was still
   slow at ~300 players.
-- GC Settings: ???? But, GC settings _do_ allocate concurrent threads, and you need
+- GC Settings: ???? But, GC settings _does_ allocate concurrent threads, and you need
   to know exactly how many. This is typically through the `-XX:ConcGCThreads=n` flag. Do not
   confuse this flag with `-XX:ParallelGCThreads=n`, as parallel GC threads only run when
   the application is paused by GC and as such should not be taken into account.
