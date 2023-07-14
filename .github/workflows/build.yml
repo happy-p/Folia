@@ -57,12 +57,3 @@ jobs:
         with:
          name: Folia
          path: build/libs/folia.jar
-      - name: Find And Rename
-        run:  |
-             cd build/libs/
-             mv folia-bundler-*jar server-release.jar
-      - name: upload Release Jar
-        uses: actions/upload-artifact@v3
-        with:
-         name: Release
-         path: build/libs/server-release.jar
