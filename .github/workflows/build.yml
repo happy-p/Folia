@@ -1,34 +1,68 @@
-name: Patch and Build
+# Here lie dragons!
+#
+# This action either builds the server or
+# builds a paperclip jar to be updated in the body
+# of the PR relating to this action.
 
+name: Build
 on:
   push:
-    branches: [ "**" ]
   pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - labeled
 
 jobs:
-  build:
-    if: ${{ github.event_name != 'pull_request' || github.repository != github.event.pull_request.head.repo.full_name }}
+  Build-Folia:
+    # Run on all label events (won't be duplicated) or all push events or on PR syncs not from the same repo
+    if: (github.event_name == 'pull_request' && github.event.action == 'labeled') || github.event_name != 'pull_request' || github.repository != github.event.pull_request.head.repo.full_name
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java: [17]
+      fail-fast: true
     steps:
-      - name: Checkout Git Repository
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
+      - name: JDK ${{ matrix.java }}
+        uses: actions/setup-java@v3.11.0
+        with:
+          java-version: ${{ matrix.java }}
+          distribution: 'temurin'
+
       - name: Validate Gradle wrapper
         uses: gradle/wrapper-validation-action@v1
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
-      - name: Set up JDK
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'temurin'
-          java-version: '17'
-      - name: Configure Git User Details
-        run: git config --global user.email "actions@github.com" && git config --global user.name "Github Actions"
+
       - name: Apply Patches
-        run: ./gradlew applyPatches
+        run: |
+          git config --global user.email "no-reply@github.com"
+          git config --global user.name "Github Actions"
+          ./gradlew applyPatches --stacktrace
+
       - name: Build
+        run: ./gradlew build --stacktrace
+      - name: jar
         run: ./gradlew createReobfBundlerJar
-      - name: upload
+      - name: Tasks
+        run: ./gradlew tasks
+      - name: Find And Rename
+        run:  |
+             cd build/libs/
+             mv folia-bundler-*jar folia.jar
+      - name: upload Folia Jar
         uses: actions/upload-artifact@v3
         with:
-         name: folia
-         path: build/libs/*.jar
+         name: Folia
+         path: build/libs/folia.jar
+      - name: Find And Rename
+        run:  |
+             cd build/libs/
+             mv folia-bundler-*jar server-release.jar
+      - name: upload Release Jar
+        uses: actions/upload-artifact@v3
+        with:
+         name: Folia
+         path: build/libs/server-release.jar
