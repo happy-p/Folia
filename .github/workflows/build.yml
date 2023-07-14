@@ -64,5 +64,5 @@ jobs:
       - name: upload Release Jar
         uses: actions/upload-artifact@v3
         with:
-         name: Folia
+         name: Release
          path: build/libs/server-release.jar
