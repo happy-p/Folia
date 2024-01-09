@@ -48,12 +48,17 @@ jobs:
         run: ./gradlew createReobfBundlerJar
       - name: Tasks
         run: ./gradlew tasks
-      - name: Find And Rename
-        run:  |
-             cd build/libs/
-             mv folia-bundler-*jar folia.jar
       - name: upload Folia Jar
         uses: actions/upload-artifact@v3
         with:
          name: Folia
-         path: build/libs/folia.jar
+         path: build/libs/*.jar
+      - name: automatic releases
+        uses: marvinpinto/action-automatic-releases@v1.2.1
+        with:
+         repo_token: "${{ secrets.GITHUB_TOKEN }}"
+         automatic_release_tag: "latest"
+         prerelease: false
+         title: "Folia 自动构建最新版本"
+         files: |
+              build/libs/*.jar
